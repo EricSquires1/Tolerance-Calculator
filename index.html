@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tolerance Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .radio-grid {
+            display: flex;
+            gap: 50px;
+            margin-bottom: 20px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .column-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .output-box {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 350px;
+        }
+
+        .label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .radio {
+            padding-top: 6px;
+        }
+
+        .input-box {
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            margin-left: 25px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        #spacer {
+            margin-bottom: 80px;
+        }
+        
+        #otherValueContainer, #standardOtherValueContainer {
+            margin-top: 5px;
+            display: none;
+            margin-left: 20px;
+        }
+
+        #otherValueContainer input, #standardOtherValueContainer input {
+            display: block;
+            margin-bottom: 8px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Toleance Calculator</h1>
+
+    <div class="radio-grid">
+        <div class="column">
+            <div class="column-title">PosiTector 6000</div>
+            <label class="radio"><input type="radio" name="options" value="reg"> Regular Probe</label>
+            <div class="description">F, N, FN, FS, NS, FNS,</div>
+            <div class="description">FNDS, NRS, FNRS, FXS</div>
+
+            <label class="radio"><input type="radio" name="options" value="micro"> Micro/Anodizing Probe</label>
+            <div class="description">F0S, F90S, F90ES, F45S,</div>
+            <div class="description">N0S, N90S, N45S, NAS</div>
+
+            <label class="radio"><input type="radio" name="options" value="tSeries"> T Series Thick Probe</label>
+            <div class="description">FT, FTS, FTRS, FNTS</div>
+
+            <label class="radio"><input type="radio" name="options" value="HX"> Xtreme Thick Probe</label>
+            <div class="description">FHXS</div>
+            
+            <label class="radio"><input type="radio" name="options" value="KSeries"> K Series Thick Probe</label>
+            <div class="description">FKS, NKS</div>
+
+            <label class="radio"><input type="radio" name="options" value="HighRange"> High Range Thick Probe</label>
+            <div class="description">FJS, FLS, FNGS</div>
+
+            <div id="spacer"></div>
+        </div>
+
+        <div class="column">
+            <div class="column-title">Other Probes</div>            
+            <label class="radio"><input type="radio" name="options" value="200BC"> 200 B/C Probe</label>
+
+            <label class="radio"><input type="radio" name="options" value="200D"> 200 D Probe</label>
+
+            <label class="radio"><input type="radio" name="options" value="SPG"> SPG Probe</label>
+            <div class="description">SPG, SPGS, SPGOS, SPGCS</div>
+            
+            <label class="radio"><input type="radio" name="options" value="RT"> Micrometer</label>
+            <div class="description">RTR H, RTM, Analog</div>
+
+            <label  class="radio">
+                <input type="radio" name="options" value="other" id="otherRadio"> Other
+                <div id="otherValueContainer">
+                    <input type="number" step="any" id="otherB" placeholder="Constant">
+                    <input type="number" step="any" id="otherA" placeholder="Variable (%)">
+                    
+                </div>
+            </label>
+            <div class="description">Enter a custom tolerance</div>
+            <div class="description">± (Constant + Variable %)</div>
+        </div>
+
+        <div class="column">
+            <div class="column-title">Standard Type</div>
+            <label class="radio"><input type="radio" name="standardType" value="noSTD"> None</label>
+            <div class="description">Only considers probe tolerance</div>
+
+            <label class="radio"><input type="radio" name="standardType" value="STD"> Coated Metal Plate</label>
+
+            <label class="radio"><input type="radio" name="standardType" value="CSS"> Certified Coating Thickness Shim</label>
+
+            <label class="radio"><input type="radio" name="standardType" value="SHIM"> Non-Certified Coating Thickness Shim</label>
+
+            <label class="radio"><input type="radio" name="standardType" value="STDP"> Certified Polystrene Block</label>
+
+            <label class="radio"><input type="radio" name="standardType" value="PBlock"> Non-Certified Polystrene Block</label>
+            <div class="description">White or clear block, comes with high range probes</div>
+
+            <label class="radio"><input type="radio" name="standardType" value="CSSSPG"> SPG Certified Shim</label>
+
+            <label class="radio"><input type="radio" name="standardType" value="RTCSS"> Testex Certified Shim</label>
+
+            <labe class="radio">
+                <input type="radio" name="standardType" value="other" id="standardOtherRadio"> Other
+                <div id="standardOtherValueContainer">
+                    <input type="number" step="any" id="standardD" placeholder="Constant">
+                    <input type="number" step="any" id="standardC" placeholder="Variable (%)">
+
+                </div>
+            </label>
+            <div class="description">Enter a custom tolerance</div>
+            <div class="description">± (Constant + Variable %)</div>
+        </div>
+    </div>
+
+    <div class="input-box">
+        <label for="userInput" class="label">Measurement:</label><br>
+        <input type="number" step="any" id="userInput" placeholder="">
+    </div>
+
+    <div class="accInfo">
+        <p>Probe Accuracy: (<span id="probeConst">--</span> mils + <span id="probePercent">--</span>%) = ± <span id="probeAcc">--</span> mils</p>
+        <p>Standard Accuracy: (<span id="stdConst">--</span> mils + <span id="stdPercent">--</span>%) = ± <span id="stdAcc">--</span> mils</p>
+        <p>Combined Tolerance: ± <span id="combinedAcc">--</span> mils</p>
+    </div>
+
+    <div class="output-box">
+        <span class="label">Min:</span> <span id="minValue">None</span>
+    </div>
+
+    <div class="output-box">
+        <span class="label">Max:</span> <span id="maxValue">None</span>
+    </div>
+
+
+    <script>
+        const radios = document.querySelectorAll('input[name="options"]');
+        const userInput = document.getElementById('userInput');
+        const otherAInput = document.getElementById('otherA');
+        const otherBInput = document.getElementById('otherB');
+        const otherValueContainer = document.getElementById('otherValueContainer');
+
+        const standardRadios = document.querySelectorAll('input[name="standardType"]');
+        const standardOtherValueContainer = document.getElementById('standardOtherValueContainer');
+        const standardCInput = document.getElementById('standardC');
+        const standardDInput = document.getElementById('standardD');
+
+        const minSpan = document.getElementById('minValue');
+        const maxSpan = document.getElementById('maxValue');
+        const probePercentSpan = document.getElementById('probePercent');
+        const probeConstSpan = document.getElementById('probeConst');
+        const probeAccSpan = document.getElementById('probeAcc');
+        const stdPercentSpan = document.getElementById('stdPercent');
+        const stdConstSpan = document.getElementById('stdConst');
+        const stdAccSpan = document.getElementById('stdAcc');
+        const combinedAccSpan = document.getElementById('combinedAcc');
+
+        const probeParameters = {
+            "reg": {a:1, b:0.05, t:2, a2:1, b2:0.1},
+            "micro": {a:1, b:0.02, t:4, a2:3, b2:0.1},
+            "tSeries": {a:1, b:0.5, t:100, a2:3, b2:0.5},
+            "HX": {a:3, b:0.1, t:Infinity},
+            "KSeries": {a:3, b:1, t:Infinity},
+            "HighRange": {a: 3, b:10, t:Infinity},
+            "200BC":{a:3, b:0.1, t:Infinity},
+            "200D":{a:3, b:1, t:Infinity},
+            "SPG": {a:5, b:0.2, t:Infinity},
+            "RT": {a:0, b:0.2, t:Infinity}
+        };
+
+        const standardParameters = {
+            "noSTD": {c:0,d:0},
+            "STD": {c:0,d:0.017},
+            "CSS": {c:0,d:0.08},
+            "SHIM": {c:0,d:0},
+            "STDP": {c:0.05,d:0.1},
+            "PBlock": {c:5,d:0},
+            "CSSSPG": {c:0,d:0.08},
+            "RTCSS": {c:0,d:0.05},
+        };
+
+        function updateOutput() {
+            const x = parseFloat(userInput.value);
+            const selectedProbe = document.querySelector('input[name="options"]:checked');
+            const selectedStandard = document.querySelector('input[name="standardType"]:checked');
+
+            if (isNaN(x) || !selectedProbe || !selectedStandard) {
+                minSpan.textContent = "None";
+                maxSpan.textContent = "None";
+                return;
+            }
+
+            // a & b
+            let a, b;
+            if (selectedProbe.value === "other") {
+                a = parseFloat(otherAInput.value);
+                b = parseFloat(otherBInput.value);
+            } else {
+                ({ a, b, t, a2, b2 } = probeParameters[selectedProbe.value] || {});
+
+                if (x > t) {
+                    a = a2;
+                    b = b2;
+                }
+            }
+
+            // c & d
+            let c, d;
+            if (selectedStandard.value === "other") {
+                c = parseFloat(standardCInput.value);
+                d = parseFloat(standardDInput.value);
+            } else if (selectedStandard.value === "SHIM"){
+                
+                if (x > 3){
+                    c = 5;
+                    d = 0;
+                } else if (x > 1.5){
+                    c = 10;
+                    d = 0;
+                } else {
+                    c = 20;
+                    d = 0;
+                }
+            
+            } else {
+                ({ c, d } = standardParameters[selectedStandard.value] || {});
+            }
+
+            if ([a, b, c, d].some(val => isNaN(val))) {
+                minSpan.textContent = "None";
+                maxSpan.textContent = "None";
+                return;
+            }
+
+            const pDelta = x * a / 100 + b
+            const sDelta = x * c / 100 + d
+            const delta = Math.sqrt(pDelta**2 + sDelta**2);
+            const min = x - delta;
+            const max = x + delta;
+
+            minSpan.textContent = min.toFixed(2);
+            maxSpan.textContent = max.toFixed(2);
+            probePercentSpan.textContent = a.toFixed(1);
+            probeConstSpan.textContent = b.toFixed(2);
+            probeAccSpan.textContent = pDelta.toFixed(2);
+            stdPercentSpan.textContent = c.toFixed(1);
+            stdConstSpan.textContent = d.toFixed(2);
+            stdAccSpan.textContent = sDelta.toFixed(2);
+            combinedAccSpan.textContent = delta.toFixed(2);
+        }
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                otherValueContainer.style.display = radio.value === "other" ? "block" : "none";
+                updateOutput();
+            });
+        });
+
+        standardRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                standardOtherValueContainer.style.display = radio.value === "other" ? "block" : "none";
+                updateOutput();
+            });
+        });
+
+        [userInput, otherAInput, otherBInput, standardCInput, standardDInput].forEach(input =>
+            input.addEventListener('input', updateOutput)
+        );
+    </script>
+</body>
+</html>

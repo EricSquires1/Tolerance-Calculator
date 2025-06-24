@@ -70,7 +70,7 @@
     </style>
 </head>
 <body>
-    <h1>Toleance Calculator</h1>
+    <h1>Tolerance Calculator</h1>
 
     <div class="radio-grid">
         <div class="column">
@@ -157,7 +157,7 @@
 
     <div class="input-box">
         <label for="userInput" class="label">Measurement:</label><br>
-        <input type="number" step="any" id="userInput" placeholder="">
+        <input type="number" step="any" id="userInput" placeholder=""><span> mils</span>
     </div>
 
     <div class="accInfo">
@@ -167,11 +167,11 @@
     </div>
 
     <div class="output-box">
-        <span class="label">Min:</span> <span id="minValue">None</span>
+        <span class="label">Min:</span> <span id="minValue">---</span><span> mils</span>
     </div>
 
     <div class="output-box">
-        <span class="label">Max:</span> <span id="maxValue">None</span>
+        <span class="label">Max:</span> <span id="maxValue">---</span><span> mils</span>
     </div>
 
 
@@ -227,8 +227,8 @@
             const selectedStandard = document.querySelector('input[name="standardType"]:checked');
 
             if (isNaN(x) || !selectedProbe || !selectedStandard) {
-                minSpan.textContent = "None";
-                maxSpan.textContent = "None";
+                minSpan.textContent = "---";
+                maxSpan.textContent = "---";
                 return;
             }
 
@@ -269,8 +269,8 @@
             }
 
             if ([a, b, c, d].some(val => isNaN(val))) {
-                minSpan.textContent = "None";
-                maxSpan.textContent = "None";
+                minSpan.textContent = "---";
+                maxSpan.textContent = "---";
                 return;
             }
 
